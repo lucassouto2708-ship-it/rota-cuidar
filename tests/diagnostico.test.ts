@@ -43,6 +43,12 @@ describe("diagnóstico de conexão", () => {
   it("mensagem do Supabase 'Tenant or user not found'", () => {
     expect(diagnosticarErroBanco({ code: "XX000", message: "Tenant or user not found" }).solucao).toMatch(/aws-0 por aws-1/);
   });
+  it("variação real do Supabase: '(ENOTFOUND) tenant/user ... not found'", () => {
+    const d = diagnosticarErroBanco({ code: "XX000", message: "(ENOTFOUND) tenant/user postgres.wfecpkvjzbuuzplhsimc not found" });
+    expect(d.problema).toMatch(/não reconheceu o projeto/);
+    expect(d.solucao).toMatch(/aws-0 por aws-1/);
+  });
+
   it("erro desconhecido não vaza a senha", () => {
     const d = diagnosticarErroBanco({ message: "falhou com SegredoXYZ no meio" }, "postgres://u:SegredoXYZ@h:1/d");
     expect(d.codigo).not.toContain("SegredoXYZ");

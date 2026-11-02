@@ -20,8 +20,8 @@ export function diagnosticarErroBanco(e: unknown, url = process.env.DATABASE_URL
     return { ok: false, problema: "A variável DATABASE_URL não existe neste deploy.", solucao: "Na Vercel: Settings → Environment Variables → crie DATABASE_URL marcando Production. Depois: Deployments → ⋯ → Redeploy." };
   if (tem("Invalid URL") || err.code === "ERR_INVALID_URL")
     return { ok: false, problema: "O endereço em DATABASE_URL está mal formado.", solucao: "Confira se começa com postgresql:// e se a senha tem só letras e números (sem @ # / ? %). Sem espaços antes ou depois." };
-  if (tem("Tenant or user not found"))
-    return { ok: false, problema: "O Supabase não reconheceu o projeto/usuário no endereço.", solucao: "Confira o trecho postgres.ID_DO_PROJETO. Se estiver certo, troque aws-0 por aws-1 (ou vice-versa) na DATABASE_URL e faça Redeploy." };
+  if (tem("Tenant or user not found") || tem("tenant/user"))
+    return { ok: false, problema: "O Supabase não reconheceu o projeto/usuário no endereço.", solucao: "O servidor (região) no endereço não é o do seu projeto. Troque aws-0 por aws-1 (ou vice-versa) na DATABASE_URL e faça Redeploy. Se persistir, confira a região do projeto em Supabase → Project Settings → General e ajuste o trecho sa-east-1." };
   if (err.code === "28P01" || tem("password authentication failed"))
     return { ok: false, problema: "Senha do banco incorreta.", solucao: "No Supabase: Project Settings → Database → Reset database password (só letras e números). Atualize a senha na DATABASE_URL e faça Redeploy." };
   if (err.code === "ENOTFOUND" || tem("getaddrinfo"))
