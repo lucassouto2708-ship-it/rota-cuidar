@@ -6,6 +6,8 @@ const MENUS = {
   admin: [{ href: "/admin", rotulo: "Secretarias" }],
   gestor: [
     { href: "/gestor", rotulo: "Painel" },
+    { href: "/gestor/frota", rotulo: "Frota" },
+    { href: "/gestor/motoristas", rotulo: "Motoristas" },
     { href: "/gestor/pacientes", rotulo: "Pacientes" },
   ],
   paciente: [{ href: "/paciente", rotulo: "Início" }],

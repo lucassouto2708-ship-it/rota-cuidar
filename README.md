@@ -8,7 +8,7 @@ Uma única instalação atende **várias secretarias** (multi-cliente), com os d
 | Papel | Quem é | Entra por | Pode |
 |---|---|---|---|
 | **admin** | Você (dono da plataforma) | `/entrar` (e-mail) | Cadastrar secretarias, criar gestores, suspender/reativar uma secretaria |
-| **gestor** | Equipe da secretaria | `/entrar` (e-mail) | Cadastrar pacientes, gerar nova senha, desativar pacientes (e, nas próximas etapas, frota, viagens e lista de embarque) |
+| **gestor** | Equipe da secretaria | `/entrar` (e-mail) | Frota com mapa de assentos, motoristas, pacientes (e, nas próximas etapas, viagens e lista de embarque) |
 | **paciente** | Paciente do SUS | `/<link-da-secretaria>/entrar` (CPF) | Ver e reservar viagens (próximas etapas) |
 
 Gestores e pacientes recebem **senha provisória** e são obrigados a trocá-la no primeiro acesso.
@@ -44,11 +44,22 @@ Dados de demonstração (`db:seed`), senha `demo12345`:
 - Gestores: `gestor@vilaverde.demo` e `gestor@serraalta.demo`, em `/entrar`
 - Pacientes: CPF `529.982.247-25` em `/vila-verde/entrar` e CPF `111.444.777-35` em `/serra-alta/entrar`
 
+## Frota e mapa de assentos
+
+- Cada veículo tem uma grade (fileiras × colunas). A célula da frente à esquerda é sempre o **motorista**; células vazias são o corredor.
+- Tipos de assento: **comum**, **preferencial** e **cadeirante** (contam como vaga), **equipe de saúde** (não vai para pacientes) e **bloqueado**.
+- Ao cadastrar, o veículo já recebe o modelo do tipo escolhido (carro 4, van 15, micro-ônibus 28, ônibus 44, ambulância 2 + 2 da equipe), e o gestor ajusta no editor visual.
+- Proteções ao salvar o mapa:
+  - os assentos são mantidos pela posição, então as reservas continuam apontando para o mesmo assento;
+  - um assento com reserva em viagem futura não pode ser removido nem virar equipe/bloqueado;
+  - um assento com reserva só no histórico fica oculto em vez de ser apagado.
+- Veículo ou motorista com viagem futura não pode ser inativado.
+
 ## Testes
 
 ```bash
 npm test          # regras, permissões e garantias do banco (usa DATABASE_URL_TEST, que é APAGADO a cada execução)
-npm run test:e2e  # fluxo no navegador; precisa do app rodando em :3000 e do seed aplicado
+npm run test:e2e  # fluxos no navegador (acesso + frota); precisa do app rodando em :3000 e do seed aplicado
 ```
 
 ## Segurança e isolamento entre secretarias

@@ -115,3 +115,47 @@ form.inline { display: inline-flex; align-items: center; gap: 6px; }
   .linha-campos:has(.curto) { grid-template-columns: 1fr 80px; }
 }
 .nowrap { white-space: nowrap; }
+
+/* Frota */
+.vehicle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.vehicle-card { display: block; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); color: var(--ink); }
+.vehicle-card:hover { border-color: var(--green); text-decoration: none; }
+.vehicle-card.inativo { opacity: 0.6; }
+.vehicle-card-top { display: flex; justify-content: space-between; align-items: center; }
+.vehicle-symbol { width: 44px; height: 44px; border-radius: 12px; background: var(--green2); display: grid; place-items: center; font-size: 22px; }
+.vehicle-card h3 { font: 700 16px Manrope, sans-serif; margin: 14px 0 2px; }
+.vehicle-card p { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+.capacity { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 10px; font-size: 12px; color: var(--muted); }
+.capacity b { font-size: 18px; color: var(--ink); }
+.check { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+
+/* Editor de assentos */
+.editor { display: grid; gap: 12px; }
+.editor-ferramentas { display: flex; flex-wrap: wrap; gap: 6px; }
+.ferramenta { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 12px; font-weight: 600; font-size: 12px; color: #4d5d59; }
+.ferramenta.ativa { background: var(--ink); color: #fff; border-color: var(--ink); }
+.editor-corpo { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }
+.veiculo-desenho { border: 2px solid #cfdad6; border-radius: 28px 28px 14px 14px; padding: 10px 14px 16px; background: #fbfcfc; }
+.veiculo-frente { text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #99a49f; margin-bottom: 8px; }
+.grade-assentos { display: grid; gap: 8px; }
+.celula { aspect-ratio: 1; min-width: 44px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 13px; border: 2px solid transparent; padding: 0; }
+.celula.vazia { background: transparent; border: 2px dashed #e3e9e7; }
+.celula.vazia:hover { border-color: var(--green); }
+.celula.motorista { background: #e9edec; color: #8b9995; font-size: 20px; }
+.t-comum { background: #fff; border-color: var(--green); color: var(--green); }
+.t-preferencial { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
+.t-cadeirante { background: #e8f0fb; border-color: #3b6fb6; color: #3b6fb6; }
+.t-equipe { background: #f1ebf9; border-color: #7a52b3; color: #7a52b3; }
+.t-bloqueado { background: #eef1f0; border-color: #c3ccc9; color: #9aa6a2; }
+.editor-lateral { display: grid; gap: 12px; min-width: 210px; flex: 1; }
+.resumo-assentos { background: var(--green2); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; font-size: 13px; }
+.resumo-assentos b { font-size: 16px; }
+.controle-tamanho { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.controle-tamanho span { min-width: 92px; }
+.outline.mini { padding: 4px 12px; font-size: 16px; line-height: 1; }
+.botoes-coluna { display: grid; gap: 6px; }
+.legenda { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.legenda span { display: flex; align-items: center; gap: 8px; }
+.mini-celula { width: 18px; height: 18px; min-width: 18px; border-radius: 5px; display: inline-block; }
+.aviso-inline { color: var(--amber); font-weight: 600; font-size: 12px; margin-right: 12px; align-self: center; }
+.outline:disabled { opacity: 0.5; cursor: not-allowed; }

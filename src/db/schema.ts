@@ -125,12 +125,16 @@ export const veiculos = pgTable(
     tipo: tipoVeiculoEnum("tipo").notNull(),
     placa: text("placa"),
     acessivel: boolean("acessivel").notNull().default(false),
+    // tamanho da grade do mapa de assentos (a célula 0,0 é sempre o motorista)
+    layoutLinhas: integer("layout_linhas").notNull().default(5),
+    layoutColunas: integer("layout_colunas").notNull().default(4),
     ativo: boolean("ativo").notNull().default(true), // inativar em vez de apagar (preserva histórico)
     criadoEm: criadoEm(),
   },
   (t) => [
     unique("veiculos_secretaria_id_uk").on(t.secretariaId, t.id),
     uniqueIndex("veiculos_secretaria_placa_uk").on(t.secretariaId, t.placa),
+    check("veiculos_layout_tamanho", sql`${t.layoutLinhas} between 1 and 20 and ${t.layoutColunas} between 2 and 6`),
   ],
 );
 
@@ -145,12 +149,14 @@ export const assentos = pgTable(
     linha: integer("linha").notNull(), // posição no mapa (grade)
     coluna: integer("coluna").notNull(),
     tipo: tipoAssentoEnum("tipo").notNull().default("comum"),
+    // assento removido do mapa, mas que tem reservas no histórico: fica guardado e oculto
+    ativo: boolean("ativo").notNull().default(true),
   },
   (t) => [
-    unique("assentos_veiculo_rotulo_uk").on(t.veiculoId, t.rotulo),
-    unique("assentos_veiculo_posicao_uk").on(t.veiculoId, t.linha, t.coluna),
+    uniqueIndex("assentos_veiculo_rotulo_uk").on(t.veiculoId, t.rotulo).where(sql`${t.ativo}`),
+    uniqueIndex("assentos_veiculo_posicao_uk").on(t.veiculoId, t.linha, t.coluna).where(sql`${t.ativo}`),
     unique("assentos_veiculo_id_uk").on(t.veiculoId, t.id),
-    check("assentos_posicao_valida", sql`${t.linha} >= 0 and ${t.coluna} >= 0`),
+    check("assentos_posicao_valida", sql`${t.linha} >= 0 and ${t.coluna} >= 0 and not (${t.linha} = 0 and ${t.coluna} = 0)`),
   ],
 );
 
@@ -167,7 +173,10 @@ export const motoristas = pgTable(
     ativo: boolean("ativo").notNull().default(true),
     criadoEm: criadoEm(),
   },
-  (t) => [unique("motoristas_secretaria_id_uk").on(t.secretariaId, t.id)],
+  (t) => [
+    unique("motoristas_secretaria_id_uk").on(t.secretariaId, t.id),
+    uniqueIndex("motoristas_secretaria_cnh_uk").on(t.secretariaId, t.cnh),
+  ],
 );
 
 // ───────────────────────── Viagens ─────────────────────────
@@ -295,3 +304,7 @@ export const auditoria = pgTable(
 export type Papel = (typeof papelEnum.enumValues)[number];
 export type Usuario = typeof usuarios.$inferSelect;
 export type Secretaria = typeof secretarias.$inferSelect;
+export type Veiculo = typeof veiculos.$inferSelect;
+export type Assento = typeof assentos.$inferSelect;
+export type TipoVeiculo = (typeof tipoVeiculoEnum.enumValues)[number];
+export type TipoAssento = (typeof tipoAssentoEnum.enumValues)[number];
