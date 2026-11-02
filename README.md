@@ -115,18 +115,16 @@ tests/                  testes (Vitest) e e2e/ (Playwright)
 
 ## Deploy (Supabase + Vercel)
 
-1. **Supabase:** crie o projeto na região **South America (São Paulo)**. Em *Project Settings → Database* copie:
-   - a *Connection string* do **Transaction pooler** (porta 6543), para usar em `DATABASE_URL`;
-   - a do **Session pooler** (porta 5432), para usar em `DATABASE_URL_MIGRACAO`;
-   - (recomendado) o certificado em *SSL Configuration*, para usar em `DATABASE_CA_CERT`.
-2. **Vercel:** importe o repositório do GitHub. O `vercel.json` já define a região São Paulo (`gru1`) e o build (`db:migrate` e depois `build`).
-3. Em *Settings → Environment Variables*, com escopo **Production**, crie `DATABASE_URL`, `DATABASE_URL_MIGRACAO`, `DATABASE_CA_CERT` e, só no primeiro deploy, `ADMIN_INICIAL_NOME`, `ADMIN_INICIAL_EMAIL` e `ADMIN_INICIAL_SENHA` (10 ou mais caracteres).
-4. Faça o deploy. O build aplica as migrações e cria o admin inicial. Depois de entrar, **apague as variáveis `ADMIN_INICIAL_*`**.
-5. Os deploys de *preview* não rodam migrações (não mexem no banco de produção).
+O banco de produção é preparado **manualmente no SQL Editor do Supabase**, com os arquivos da pasta `supabase/`:
 
-**Segurança no Supabase:** a migração `0002` liga o RLS em todas as tabelas e retira o acesso dos papéis `anon` e `authenticated`. Com isso, a API REST automática do Supabase não lê nem grava nada.
+1. `supabase/01_estrutura.sql`: cria as tabelas e a proteção. Depois rode `supabase/01_conferir.sql`: todas as linhas devem mostrar **OK**.
+2. `supabase/02_admin.sql`: cria o seu usuário admin. Troque nome, e-mail e senha antes de rodar.
+3. Na Vercel, importe o repositório e crie a variável `DATABASE_URL` (conexão do *Transaction pooler*, porta 6543). O `vercel.json` já define a região São Paulo.
+
+**Quando o banco mudar** (nova migração em `drizzle/`), rode `npm run sql:supabase` para gerar o SQL atualizado. Ou peça o arquivo da mudança, para rodar no SQL Editor.
+
+**Segurança no Supabase:** o SQL liga o RLS em todas as tabelas e retira o acesso dos papéis `anon` e `authenticated`. Assim, a API REST automática do Supabase não lê nem grava nada.
 O app não é afetado, porque se conecta como dono das tabelas.
-**Toda tabela nova precisa de `ENABLE ROW LEVEL SECURITY` na migração dela.** Opcional: desligue a "Data API" em *Project Settings → API*.
 
 ## Antes de colocar em produção
 
