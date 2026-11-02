@@ -13,6 +13,9 @@ const LOCAIS = new Set(["localhost", "127.0.0.1", "::1"]);
 
 export function configBanco(url: string | undefined, opcoes: { max?: number } = {}): PoolConfig {
   if (!url) throw new Error("DATABASE_URL não configurada. Copie .env.example para .env.");
+  // senha com @, # ou espaço quebra o endereço sem dar erro (o host vira outra coisa): avisa logo
+  if (url.trim() !== url || (url.match(/@/g) ?? []).length !== 1 || url.includes("#"))
+    throw new Error("Invalid URL: DATABASE_URL com espaço ou caractere especial (@ ou #) fora do lugar — use senha só com letras e números.");
   const u = new URL(url);
   for (const p of ["sslmode", "sslrootcert", "sslcert", "sslkey", "uselibpqcompat"]) u.searchParams.delete(p);
   const local = LOCAIS.has(u.hostname);
