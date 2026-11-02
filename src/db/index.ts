@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import { configBanco } from "./conexao";
 import * as schema from "./schema";
 
 declare global {
@@ -7,14 +8,9 @@ declare global {
   var __rotaPool: Pool | undefined;
 }
 
-function criarPool() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL não configurada. Copie .env.example para .env.");
-  return new Pool({ connectionString: url, max: 10 });
-}
-
-export const pool = globalThis.__rotaPool ?? criarPool();
-if (process.env.NODE_ENV !== "production") globalThis.__rotaPool = pool;
+// Um pool por instância (em dev e também nas funções da Vercel, que reaproveitam a instância entre requisições)
+export const pool = globalThis.__rotaPool ?? new Pool(configBanco(process.env.DATABASE_URL));
+globalThis.__rotaPool = pool;
 
 export const db = drizzle(pool, { schema });
 export type DB = typeof db;

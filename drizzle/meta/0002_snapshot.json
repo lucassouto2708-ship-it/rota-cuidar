@@ -1,0 +1,1441 @@
+{
+  "id": "4081e893-6f27-4583-ba52-1e6bc4a81c13",
+  "prevId": "4c1bd238-5069-4c85-b08e-19e09030d950",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.assentos": {
+      "name": "assentos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "veiculo_id": {
+          "name": "veiculo_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rotulo": {
+          "name": "rotulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "linha": {
+          "name": "linha",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "coluna": {
+          "name": "coluna",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_assento",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'comum'"
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {
+        "assentos_veiculo_rotulo_uk": {
+          "name": "assentos_veiculo_rotulo_uk",
+          "columns": [
+            {
+              "expression": "veiculo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "rotulo",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"assentos\".\"ativo\"",
+          "concurrently": false
+        },
+        "assentos_veiculo_posicao_uk": {
+          "name": "assentos_veiculo_posicao_uk",
+          "columns": [
+            {
+              "expression": "veiculo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "linha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "coluna",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"assentos\".\"ativo\"",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "assentos_veiculo_id_veiculos_id_fk": {
+          "name": "assentos_veiculo_id_veiculos_id_fk",
+          "tableFrom": "assentos",
+          "columnsFrom": [
+            "veiculo_id"
+          ],
+          "tableTo": "veiculos",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "assentos_veiculo_id_uk": {
+          "name": "assentos_veiculo_id_uk",
+          "columns": [
+            "veiculo_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "assentos_posicao_valida": {
+          "name": "assentos_posicao_valida",
+          "value": "\"assentos\".\"linha\" >= 0 and \"assentos\".\"coluna\" >= 0 and not (\"assentos\".\"linha\" = 0 and \"assentos\".\"coluna\" = 0)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.auditoria": {
+      "name": "auditoria",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acao": {
+          "name": "acao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entidade": {
+          "name": "entidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "entidade_id": {
+          "name": "entidade_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dados": {
+          "name": "dados",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip": {
+          "name": "ip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auditoria_secretaria_data_idx": {
+          "name": "auditoria_secretaria_data_idx",
+          "columns": [
+            {
+              "expression": "secretaria_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "criado_em",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "auditoria_secretaria_id_secretarias_id_fk": {
+          "name": "auditoria_secretaria_id_secretarias_id_fk",
+          "tableFrom": "auditoria",
+          "columnsFrom": [
+            "secretaria_id"
+          ],
+          "tableTo": "secretarias",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        },
+        "auditoria_usuario_id_usuarios_id_fk": {
+          "name": "auditoria_usuario_id_usuarios_id_fk",
+          "tableFrom": "auditoria",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "tableTo": "usuarios",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.motoristas": {
+      "name": "motoristas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cnh": {
+          "name": "cnh",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "motoristas_secretaria_cnh_uk": {
+          "name": "motoristas_secretaria_cnh_uk",
+          "columns": [
+            {
+              "expression": "secretaria_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "cnh",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "motoristas_secretaria_id_secretarias_id_fk": {
+          "name": "motoristas_secretaria_id_secretarias_id_fk",
+          "tableFrom": "motoristas",
+          "columnsFrom": [
+            "secretaria_id"
+          ],
+          "tableTo": "secretarias",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "motoristas_secretaria_id_uk": {
+          "name": "motoristas_secretaria_id_uk",
+          "columns": [
+            "secretaria_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.reservas": {
+      "name": "reservas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "viagem_id": {
+          "name": "viagem_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculo_id": {
+          "name": "veiculo_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assento_id": {
+          "name": "assento_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "paciente_id": {
+          "name": "paciente_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo_passageiro": {
+          "name": "tipo_passageiro",
+          "type": "tipo_passageiro",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'paciente'"
+        },
+        "acompanhante_de": {
+          "name": "acompanhante_de",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nome_acompanhante": {
+          "name": "nome_acompanhante",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "documento_acompanhante": {
+          "name": "documento_acompanhante",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ponto_embarque": {
+          "name": "ponto_embarque",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "local_destino": {
+          "name": "local_destino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "horario_compromisso": {
+          "name": "horario_compromisso",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_reserva",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'confirmada'"
+        },
+        "embarque": {
+          "name": "embarque",
+          "type": "embarque",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "embarque_marcado_por": {
+          "name": "embarque_marcado_por",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "embarque_em": {
+          "name": "embarque_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_por": {
+          "name": "criado_por",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cancelado_em": {
+          "name": "cancelado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "reservas_assento_ativo_uk": {
+          "name": "reservas_assento_ativo_uk",
+          "columns": [
+            {
+              "expression": "viagem_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "assento_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"reservas\".\"status\" <> 'cancelada'",
+          "concurrently": false
+        },
+        "reservas_paciente_ativo_uk": {
+          "name": "reservas_paciente_ativo_uk",
+          "columns": [
+            {
+              "expression": "viagem_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "paciente_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "where": "\"reservas\".\"status\" <> 'cancelada' and \"reservas\".\"tipo_passageiro\" = 'paciente'",
+          "concurrently": false
+        },
+        "reservas_paciente_idx": {
+          "name": "reservas_paciente_idx",
+          "columns": [
+            {
+              "expression": "paciente_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "reservas_acompanhante_de_reservas_id_fk": {
+          "name": "reservas_acompanhante_de_reservas_id_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "acompanhante_de"
+          ],
+          "tableTo": "reservas",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "reservas_embarque_marcado_por_usuarios_id_fk": {
+          "name": "reservas_embarque_marcado_por_usuarios_id_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "embarque_marcado_por"
+          ],
+          "tableTo": "usuarios",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "reservas_criado_por_usuarios_id_fk": {
+          "name": "reservas_criado_por_usuarios_id_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "criado_por"
+          ],
+          "tableTo": "usuarios",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "reservas_viagem_mesma_secretaria_fk": {
+          "name": "reservas_viagem_mesma_secretaria_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "secretaria_id",
+            "viagem_id"
+          ],
+          "tableTo": "viagens",
+          "columnsTo": [
+            "secretaria_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "reservas_viagem_veiculo_fk": {
+          "name": "reservas_viagem_veiculo_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "viagem_id",
+            "veiculo_id"
+          ],
+          "tableTo": "viagens",
+          "columnsTo": [
+            "id",
+            "veiculo_id"
+          ],
+          "onUpdate": "cascade",
+          "onDelete": "no action"
+        },
+        "reservas_assento_do_veiculo_fk": {
+          "name": "reservas_assento_do_veiculo_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "veiculo_id",
+            "assento_id"
+          ],
+          "tableTo": "assentos",
+          "columnsTo": [
+            "veiculo_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "reservas_paciente_mesma_secretaria_fk": {
+          "name": "reservas_paciente_mesma_secretaria_fk",
+          "tableFrom": "reservas",
+          "columnsFrom": [
+            "secretaria_id",
+            "paciente_id"
+          ],
+          "tableTo": "usuarios",
+          "columnsTo": [
+            "secretaria_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "reservas_acompanhante_coerente": {
+          "name": "reservas_acompanhante_coerente",
+          "value": "(\"reservas\".\"tipo_passageiro\" = 'paciente' and \"reservas\".\"acompanhante_de\" is null and \"reservas\".\"nome_acompanhante\" is null)\n       or (\"reservas\".\"tipo_passageiro\" = 'acompanhante' and \"reservas\".\"acompanhante_de\" is not null and \"reservas\".\"nome_acompanhante\" is not null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.secretarias": {
+      "name": "secretarias",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "municipio": {
+          "name": "municipio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uf": {
+          "name": "uf",
+          "type": "char(2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ativa": {
+          "name": "ativa",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "secretarias_slug_uk": {
+          "name": "secretarias_slug_uk",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "secretarias_slug_formato": {
+          "name": "secretarias_slug_formato",
+          "value": "\"secretarias\".\"slug\" ~ '^[a-z0-9]+(-[a-z0-9]+)*$'"
+        },
+        "secretarias_uf_formato": {
+          "name": "secretarias_uf_formato",
+          "value": "\"secretarias\".\"uf\" ~ '^[A-Z]{2}$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.sessoes": {
+      "name": "sessoes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expira_em": {
+          "name": "expira_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "sessoes_usuario_idx": {
+          "name": "sessoes_usuario_idx",
+          "columns": [
+            {
+              "expression": "usuario_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "sessoes_usuario_id_usuarios_id_fk": {
+          "name": "sessoes_usuario_id_usuarios_id_fk",
+          "tableFrom": "sessoes",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "tableTo": "usuarios",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.usuarios": {
+      "name": "usuarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "papel": {
+          "name": "papel",
+          "type": "papel",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cpf": {
+          "name": "cpf",
+          "type": "char(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cns": {
+          "name": "cns",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_nascimento": {
+          "name": "data_nascimento",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "senha_hash": {
+          "name": "senha_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "trocar_senha": {
+          "name": "trocar_senha",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "usuarios_email_uk": {
+          "name": "usuarios_email_uk",
+          "columns": [
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "usuarios_secretaria_cpf_uk": {
+          "name": "usuarios_secretaria_cpf_uk",
+          "columns": [
+            {
+              "expression": "secretaria_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "cpf",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "usuarios_secretaria_id_secretarias_id_fk": {
+          "name": "usuarios_secretaria_id_secretarias_id_fk",
+          "tableFrom": "usuarios",
+          "columnsFrom": [
+            "secretaria_id"
+          ],
+          "tableTo": "secretarias",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "usuarios_secretaria_id_uk": {
+          "name": "usuarios_secretaria_id_uk",
+          "columns": [
+            "secretaria_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "usuarios_papel_secretaria": {
+          "name": "usuarios_papel_secretaria",
+          "value": "(\"usuarios\".\"papel\" = 'admin' and \"usuarios\".\"secretaria_id\" is null) or (\"usuarios\".\"papel\" <> 'admin' and \"usuarios\".\"secretaria_id\" is not null)"
+        },
+        "usuarios_equipe_tem_email": {
+          "name": "usuarios_equipe_tem_email",
+          "value": "\"usuarios\".\"papel\" = 'paciente' or \"usuarios\".\"email\" is not null"
+        },
+        "usuarios_paciente_tem_cpf": {
+          "name": "usuarios_paciente_tem_cpf",
+          "value": "\"usuarios\".\"papel\" <> 'paciente' or \"usuarios\".\"cpf\" is not null"
+        },
+        "usuarios_cpf_formato": {
+          "name": "usuarios_cpf_formato",
+          "value": "\"usuarios\".\"cpf\" is null or \"usuarios\".\"cpf\" ~ '^[0-9]{11}$'"
+        },
+        "usuarios_email_minusculo": {
+          "name": "usuarios_email_minusculo",
+          "value": "\"usuarios\".\"email\" is null or \"usuarios\".\"email\" = lower(\"usuarios\".\"email\")"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.veiculos": {
+      "name": "veiculos",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tipo": {
+          "name": "tipo",
+          "type": "tipo_veiculo",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "placa": {
+          "name": "placa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "acessivel": {
+          "name": "acessivel",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "layout_linhas": {
+          "name": "layout_linhas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 5
+        },
+        "layout_colunas": {
+          "name": "layout_colunas",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 4
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "veiculos_secretaria_placa_uk": {
+          "name": "veiculos_secretaria_placa_uk",
+          "columns": [
+            {
+              "expression": "secretaria_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "placa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "veiculos_secretaria_id_secretarias_id_fk": {
+          "name": "veiculos_secretaria_id_secretarias_id_fk",
+          "tableFrom": "veiculos",
+          "columnsFrom": [
+            "secretaria_id"
+          ],
+          "tableTo": "secretarias",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "veiculos_secretaria_id_uk": {
+          "name": "veiculos_secretaria_id_uk",
+          "columns": [
+            "secretaria_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "veiculos_layout_tamanho": {
+          "name": "veiculos_layout_tamanho",
+          "value": "\"veiculos\".\"layout_linhas\" between 1 and 20 and \"veiculos\".\"layout_colunas\" between 2 and 6"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.viagens": {
+      "name": "viagens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "secretaria_id": {
+          "name": "secretaria_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "veiculo_id": {
+          "name": "veiculo_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motorista_id": {
+          "name": "motorista_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "saida": {
+          "name": "saida",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sentido": {
+          "name": "sentido",
+          "type": "sentido",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cidade_origem": {
+          "name": "cidade_origem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cidade_destino": {
+          "name": "cidade_destino",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "viagem_par_id": {
+          "name": "viagem_par_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status_viagem",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'aberta'"
+        },
+        "reservas_ate": {
+          "name": "reservas_ate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observacoes": {
+          "name": "observacoes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "criado_em": {
+          "name": "criado_em",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "viagens_secretaria_data_idx": {
+          "name": "viagens_secretaria_data_idx",
+          "columns": [
+            {
+              "expression": "secretaria_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "data",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        },
+        "viagens_veiculo_data_idx": {
+          "name": "viagens_veiculo_data_idx",
+          "columns": [
+            {
+              "expression": "veiculo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "data",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "viagens_secretaria_id_secretarias_id_fk": {
+          "name": "viagens_secretaria_id_secretarias_id_fk",
+          "tableFrom": "viagens",
+          "columnsFrom": [
+            "secretaria_id"
+          ],
+          "tableTo": "secretarias",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        },
+        "viagens_viagem_par_id_viagens_id_fk": {
+          "name": "viagens_viagem_par_id_viagens_id_fk",
+          "tableFrom": "viagens",
+          "columnsFrom": [
+            "viagem_par_id"
+          ],
+          "tableTo": "viagens",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        },
+        "viagens_veiculo_mesma_secretaria_fk": {
+          "name": "viagens_veiculo_mesma_secretaria_fk",
+          "tableFrom": "viagens",
+          "columnsFrom": [
+            "secretaria_id",
+            "veiculo_id"
+          ],
+          "tableTo": "veiculos",
+          "columnsTo": [
+            "secretaria_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "viagens_motorista_mesma_secretaria_fk": {
+          "name": "viagens_motorista_mesma_secretaria_fk",
+          "tableFrom": "viagens",
+          "columnsFrom": [
+            "secretaria_id",
+            "motorista_id"
+          ],
+          "tableTo": "motoristas",
+          "columnsTo": [
+            "secretaria_id",
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "viagens_secretaria_id_uk": {
+          "name": "viagens_secretaria_id_uk",
+          "columns": [
+            "secretaria_id",
+            "id"
+          ],
+          "nullsNotDistinct": false
+        },
+        "viagens_id_veiculo_uk": {
+          "name": "viagens_id_veiculo_uk",
+          "columns": [
+            "id",
+            "veiculo_id"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "viagens_par_diferente": {
+          "name": "viagens_par_diferente",
+          "value": "\"viagens\".\"viagem_par_id\" is null or \"viagens\".\"viagem_par_id\" <> \"viagens\".\"id\""
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.embarque": {
+      "name": "embarque",
+      "schema": "public",
+      "values": [
+        "presente",
+        "faltou"
+      ]
+    },
+    "public.papel": {
+      "name": "papel",
+      "schema": "public",
+      "values": [
+        "admin",
+        "gestor",
+        "paciente"
+      ]
+    },
+    "public.sentido": {
+      "name": "sentido",
+      "schema": "public",
+      "values": [
+        "ida",
+        "volta"
+      ]
+    },
+    "public.status_reserva": {
+      "name": "status_reserva",
+      "schema": "public",
+      "values": [
+        "solicitada",
+        "confirmada",
+        "cancelada"
+      ]
+    },
+    "public.status_viagem": {
+      "name": "status_viagem",
+      "schema": "public",
+      "values": [
+        "aberta",
+        "fechada",
+        "em_andamento",
+        "concluida",
+        "cancelada"
+      ]
+    },
+    "public.tipo_assento": {
+      "name": "tipo_assento",
+      "schema": "public",
+      "values": [
+        "comum",
+        "preferencial",
+        "cadeirante",
+        "equipe",
+        "bloqueado"
+      ]
+    },
+    "public.tipo_passageiro": {
+      "name": "tipo_passageiro",
+      "schema": "public",
+      "values": [
+        "paciente",
+        "acompanhante"
+      ]
+    },
+    "public.tipo_veiculo": {
+      "name": "tipo_veiculo",
+      "schema": "public",
+      "values": [
+        "carro",
+        "van",
+        "micro_onibus",
+        "onibus",
+        "ambulancia",
+        "outro"
+      ]
+    }
+  },
+  "schemas": {},
+  "views": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
