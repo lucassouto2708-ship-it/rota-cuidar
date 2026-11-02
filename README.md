@@ -8,8 +8,8 @@ Uma única instalação atende **várias secretarias** (multi-cliente), com os d
 | Papel | Quem é | Entra por | Pode |
 |---|---|---|---|
 | **admin** | Você (dono da plataforma) | `/entrar` (e-mail) | Cadastrar secretarias, criar gestores, suspender/reativar uma secretaria |
-| **gestor** | Equipe da secretaria | `/entrar` (e-mail) | Frota com mapa de assentos, motoristas, pacientes (e, nas próximas etapas, viagens e lista de embarque) |
-| **paciente** | Paciente do SUS | `/<link-da-secretaria>/entrar` (CPF) | Ver e reservar viagens (próximas etapas) |
+| **gestor** | Equipe da secretaria | `/entrar` (e-mail) | Frota e mapa de assentos, motoristas, pacientes, viagens, reservas em nome do paciente, lista de embarque com presença e PDF |
+| **paciente** | Paciente do SUS | `/<link-da-secretaria>/entrar` (CPF) | Ver viagens abertas, escolher o assento no mapa (com acompanhante, ida e/ou volta), cancelar |
 
 Gestores e pacientes recebem **senha provisória** e são obrigados a trocá-la no primeiro acesso.
 
@@ -55,11 +55,37 @@ Dados de demonstração (`db:seed`), senha `demo12345`:
   - um assento com reserva só no histórico fica oculto em vez de ser apagado.
 - Veículo ou motorista com viagem futura não pode ser inativado.
 
+## Viagens, reservas e lista de embarque
+
+**Viagens (gestor)**
+- A ida e a volta são criadas juntas e ficam ligadas. A volta pode ser no mesmo dia ou dias depois, e com outro veículo ou motorista.
+- Repetição semanal (ex.: toda terça e quinta até uma data), com no máximo 60 viagens por vez.
+- Prazo opcional para os pacientes reservarem; depois dele, só o gestor reserva.
+- O mesmo veículo ou motorista não pode ter duas saídas com menos de 60 minutos de diferença.
+- O gestor pode encerrar ou reabrir as reservas, cancelar a viagem com motivo (isso cancela todas as reservas) e concluí-la.
+
+**Reservas**
+- O paciente escolhe o assento tocando no mapa e pode levar um acompanhante, que ocupa um assento próprio.
+- Pode reservar ida, volta ou as duas. Tudo é gravado junto, ou nada é gravado.
+- O assento é garantido pelo banco: em uma disputa simultânea, só um passageiro fica com ele.
+  - O teste coloca 20 pacientes disputando 4 assentos.
+- O paciente não vê os nomes de outros passageiros, só se o assento está livre ou ocupado.
+- O paciente não pode ter duas reservas de ida (ou duas de volta) no mesmo dia.
+- O gestor reserva em nome de qualquer paciente, troca passageiros de assento e cancela reservas.
+
+**Lista de embarque**
+- Tela com os passageiros em ordem de assento, com a coluna "Volta?" para ver quem não vai voltar.
+- No dia da viagem, o gestor marca "Embarcou" ou "Faltou", com contadores, e depois conclui a viagem.
+- **PDF** (A4 deitado) com a ida e a volta, caixas de presença, linha de assinatura do passageiro e do motorista, e numeração de páginas.
+  - Endereço: `/gestor/viagens/<id>/pdf`, ou com `?so=1` para só aquele trecho.
+
+Horários sempre no fuso de Brasília.
+
 ## Testes
 
 ```bash
 npm test          # regras, permissões e garantias do banco (usa DATABASE_URL_TEST, que é APAGADO a cada execução)
-npm run test:e2e  # fluxos no navegador (acesso + frota); precisa do app rodando em :3000 e do seed aplicado
+npm run test:e2e  # fluxos no navegador (acesso, frota, viagens/reservas/PDF); precisa do app rodando em :3000, do seed e do `pdftotext` (poppler-utils)
 ```
 
 ## Segurança e isolamento entre secretarias
@@ -86,6 +112,18 @@ drizzle/                migrações SQL
 scripts/                migrate, seed, create-admin
 tests/                  testes (Vitest) e e2e/ (Playwright)
 ```
+
+## Antes de colocar em produção
+
+- [ ] Hospedar com HTTPS e com Postgres gerenciado com backup automático (de preferência na região São Paulo).
+- [ ] Rodar `npm run db:migrate` e `npm run admin:create` no banco de produção (o `db:seed` não deve ser rodado lá).
+- [ ] Publicar o termo de uso e a política de privacidade (LGPD), indicar o encarregado (DPO) e definir por quanto tempo os dados ficam guardados.
+- [ ] Configurar o monitoramento de erros (ex.: Sentry) mascarando os dados pessoais.
+- [ ] Próximas melhorias sugeridas:
+  - avisos por WhatsApp (confirmação, lembrete na véspera, viagem cancelada);
+  - fila de espera quando a viagem lota;
+  - relatório mensal de faltas e ocupação;
+  - acesso do motorista pelo celular.
 
 ## Observações
 

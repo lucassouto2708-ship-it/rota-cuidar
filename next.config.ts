@@ -9,7 +9,7 @@ const securityHeaders = [
 
 const config: NextConfig = {
   poweredByHeader: false,
-  serverExternalPackages: ["pg"],
+  serverExternalPackages: ["pg", "pdfkit"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

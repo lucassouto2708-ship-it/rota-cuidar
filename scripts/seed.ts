@@ -1,6 +1,6 @@
 /** Dados de DEMONSTRAÇÃO para desenvolvimento. Nunca rode em produção. */
 import "dotenv/config";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db, pool, schema } from "../src/db";
 import { layoutPadrao } from "../src/lib/layouts";
 import { hashSenha } from "../src/lib/senha";
@@ -43,6 +43,30 @@ if (!temMotorista)
     { secretariaId: a.id, nome: "Ana Souza", telefone: "(19) 98888-2000" },
     { secretariaId: b.id, nome: "Roberto Lima", telefone: "(31) 98888-3000" },
   ]);
+
+// Viagens de demonstração (só se a secretaria ainda não tiver nenhuma futura)
+const { criarViagens, hojeBr } = await import("../src/lib/servicos/viagens");
+const { reservar } = await import("../src/lib/servicos/reservas");
+const [gestorA] = await db.select().from(schema.usuarios).where(eq(schema.usuarios.email, "gestor@vilaverde.demo"));
+const [futura] = await db.select().from(schema.viagens).where(sql`${schema.viagens.secretariaId} = ${a.id} and ${schema.viagens.data} > ${hojeBr()}`).limit(1);
+if (!futura) {
+  const ator = { id: gestorA.id, papel: "gestor" as const, secretariaId: a.id };
+  const [van] = await db.select().from(schema.veiculos).where(eq(schema.veiculos.placa, "RTA4C82"));
+  const [carlos] = await db.select().from(schema.motoristas).where(eq(schema.motoristas.nome, "Carlos Pereira"));
+  const daqui = (n: number) => { const d = new Date(`${hojeBr()}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const [v1] = await criarViagens(ator, {
+    veiculoId: van.id, motoristaId: carlos.id, data: daqui(2), saida: "06:00", cidadeOrigem: "Vila Verde", cidadeDestino: "Campinas",
+    comVolta: "on", voltaSaida: "16:00", repetir: "on", repetirDias: ["ter", "qui"], repetirAte: daqui(16),
+  });
+  const [maria] = await db.select().from(schema.usuarios).where(eq(schema.usuarios.cpf, "52998224725"));
+  const assentos = await db.select().from(schema.assentos).where(eq(schema.assentos.veiculoId, van.id)).orderBy(schema.assentos.linha, schema.assentos.coluna);
+  await reservar(ator, {
+    pacienteId: maria.id,
+    ida: { viagemId: v1.ida, assentoId: assentos[2].id, acompanhanteAssentoId: assentos[3].id },
+    volta: { viagemId: v1.volta!, assentoId: assentos[2].id, acompanhanteAssentoId: assentos[3].id },
+    acompanhanteNome: "Pedro Oliveira", localDestino: "Hospital das Clínicas da Unicamp", horarioCompromisso: "09:00", pontoEmbarque: "UBS Centro",
+  });
+}
 
 console.log(`Dados de demonstração prontos (senha de todos: ${SENHA}):
   Admin:            admin@demo.com           → /entrar

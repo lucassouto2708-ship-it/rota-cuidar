@@ -3,7 +3,9 @@ import { db, schema } from "@/db";
 import type { Ator } from "@/lib/permissoes";
 import { hashSenha } from "@/lib/senha";
 import { criarGestor, criarSecretaria } from "@/lib/servicos/secretarias";
+import { criarMotorista, criarVeiculo } from "@/lib/servicos/frota";
 import { criarPaciente } from "@/lib/servicos/usuarios";
+import { hojeBr } from "@/lib/servicos/viagens";
 
 export const uid = () => randomUUID().slice(0, 8);
 
@@ -39,4 +41,20 @@ export async function cenario(admin: Ator) {
   const p = await criarPaciente(gestor, { nome: `Paciente ${s}`, cpf });
   const paciente: Ator = { id: p.paciente.id, papel: "paciente", secretariaId: sec.id };
   return { sec, gestor, gestorEmail: g.gestor.email!, gestorSenha: g.senhaProvisoria, paciente, pacienteCpf: cpf, pacienteSenha: p.senhaProvisoria };
+}
+
+/** Data (AAAA-MM-DD) daqui a n dias, no fuso de Brasília. */
+export const emDias = (n: number) => {
+  const d = new Date(`${hojeBr()}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+
+/** Secretaria com uma van (15), um carro (4) e um motorista. */
+export async function base() {
+  const c = await cenario(await criarAdmin());
+  const van = await criarVeiculo(c.gestor, { nome: "Van", tipo: "van" });
+  const carro = await criarVeiculo(c.gestor, { nome: "Carro", tipo: "carro" });
+  const mot = await criarMotorista(c.gestor, { nome: "Carlos Motorista" });
+  return { ...c, van, carro, mot };
 }

@@ -159,3 +159,72 @@ form.inline { display: inline-flex; align-items: center; gap: 6px; }
 .mini-celula { width: 18px; height: 18px; min-width: 18px; border-radius: 5px; display: inline-block; }
 .aviso-inline { color: var(--amber); font-weight: 600; font-size: 12px; margin-right: 12px; align-self: center; }
 .outline:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Viagens e reservas */
+.botao-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none !important; }
+.primary.botao-link { color: #fff; }
+.acoes-topo { display: flex; gap: 8px; flex-wrap: wrap; }
+.ok-aviso { background: var(--green2); color: #0f5c4d; }
+.filtros { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; padding: 16px 20px; }
+.filtros .field { min-width: 150px; }
+.sentido { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; padding: 2px 7px; border-radius: 6px; margin-right: 4px; }
+.s-ida { background: var(--green2); color: var(--green); }
+.s-volta { background: #e8f0fb; color: #3b6fb6; }
+.st-fechada { background: var(--amber-bg); color: var(--amber); }
+.st-cancelada { background: var(--red-bg); color: var(--red); }
+.st-concluida { background: #eef1f0; color: #5f6d69; }
+.seat { min-width: 90px; }
+.seat-label { font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.bar { height: 6px; background: #edf2f0; border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--green); }
+.bar i.near { background: var(--amber); }
+.bar i.full { background: var(--red); }
+.celula.corredor { background: transparent; }
+.celula.assento { display: grid; place-items: center; align-content: center; gap: 0; line-height: 1.1; }
+.celula small { font-size: 9px; font-weight: 700; }
+.e-livre { background: #fff; border-color: var(--green); color: var(--green); }
+.e-livre:hover:not(:disabled) { background: var(--green2); }
+.e-ocupado { background: #e4e9e7; border-color: #e4e9e7; color: #7d8a86; }
+.e-meu { background: #e8f0fb; border-color: #3b6fb6; color: #3b6fb6; }
+.sel { background: var(--green); border-color: var(--green); color: #fff; }
+.marca-preferencial { border-style: double; border-width: 3px; border-color: var(--amber); }
+.marca-cadeirante { border-color: #3b6fb6; }
+.celula:disabled { cursor: default; }
+.legenda-linha { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; }
+.mapa-viagem { display: grid; justify-items: start; }
+.tabela-passageiros { margin-top: 18px; }
+.trechos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.trecho { border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.trecho.desligado { opacity: 0.6; }
+.titulo-trecho { font-weight: 700; margin-bottom: 10px; }
+.escolhendo { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.curto-200 { max-width: 220px; }
+.secao-form { font: 700 13px Manrope, sans-serif; color: var(--green); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.bloco-opcional { display: grid; gap: 12px; border-left: 3px solid var(--green2); padding-left: 14px; }
+.dias-semana { display: flex; flex-wrap: wrap; gap: 6px; }
+.dia { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; display: flex; gap: 5px; align-items: center; font-size: 13px; }
+.panel.estreito-largo { max-width: 720px; }
+.acoes-viagem { display: flex; gap: 8px; margin-top: 14px; }
+.cancelar-viagem { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+.cancelar-viagem summary { color: var(--red); font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+.mini-btn { padding: 6px 10px; font-size: 12px; }
+.outline.ok { color: var(--green); border-color: #b9dcd2; }
+.ok-num { color: var(--green); }
+.falta-num { color: var(--red); }
+.presenca form.inline + form.inline { margin-left: 4px; }
+tr.pres-presente td { background: #f4fbf8; }
+tr.pres-faltou td { background: #fdf5f5; }
+.cartoes-reserva { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.cartao-reserva { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.cr-topo { display: flex; align-items: center; gap: 6px; }
+.cr-trajeto { font: 700 16px Manrope, sans-serif; }
+.cr-assento b { font-size: 16px; color: var(--green); }
+.cartao-reserva form { margin-top: 6px; }
+.lista-disponiveis { display: grid; gap: 10px; }
+.disponivel { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.canceladas { margin-top: 12px; display: grid; gap: 6px; }
+@media (max-width: 720px) {
+  .disponivel { flex-direction: column; align-items: flex-start; }
+  .acoes-linha { white-space: normal; }
+  table { font-size: 13px; }
+}

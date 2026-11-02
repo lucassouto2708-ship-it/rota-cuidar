@@ -6,11 +6,12 @@ const MENUS = {
   admin: [{ href: "/admin", rotulo: "Secretarias" }],
   gestor: [
     { href: "/gestor", rotulo: "Painel" },
+    { href: "/gestor/viagens", rotulo: "Viagens" },
     { href: "/gestor/frota", rotulo: "Frota" },
     { href: "/gestor/motoristas", rotulo: "Motoristas" },
     { href: "/gestor/pacientes", rotulo: "Pacientes" },
   ],
-  paciente: [{ href: "/paciente", rotulo: "Início" }],
+  paciente: [{ href: "/paciente", rotulo: "Minhas viagens" }],
 } as const;
 
 const NOME_PAPEL = { admin: "Administrador da plataforma", gestor: "Gestor", paciente: "Paciente" } as const;
