@@ -19,10 +19,10 @@ type Ferramenta = TipoAssento | "apagar" | "renomear";
 const FERRAMENTAS: { id: Ferramenta; rotulo: string }[] = [
   { id: "comum", rotulo: "Comum" },
   { id: "preferencial", rotulo: "Preferencial" },
-  { id: "cadeirante", rotulo: "♿ Cadeirante" },
-  { id: "equipe", rotulo: "✚ Equipe" },
-  { id: "bloqueado", rotulo: "✕ Bloqueado" },
-  { id: "renomear", rotulo: "✎ Renomear" },
+  { id: "cadeirante", rotulo: "Cadeirante" },
+  { id: "equipe", rotulo: "Equipe" },
+  { id: "bloqueado", rotulo: "Bloqueado" },
+  { id: "renomear", rotulo: "Renomear" },
   { id: "apagar", rotulo: "Apagar" },
 ];
 

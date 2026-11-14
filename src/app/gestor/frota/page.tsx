@@ -6,7 +6,14 @@ import { NOME_TIPO_VEICULO } from "@/lib/layouts";
 import { formatarPlaca, listarVeiculos } from "@/lib/servicos/frota";
 import { acaoCriarVeiculo } from "./actions";
 
-const ICONE = { carro: "🚗", van: "🚐", micro_onibus: "🚌", onibus: "🚌", ambulancia: "🚑", outro: "🚙" } as const;
+function IconeVeiculo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 6h11v10H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="17.5" r="1.5" /><circle cx="17" cy="17.5" r="1.5" />
+    </svg>
+  );
+}
+const ICONE = { carro: <IconeVeiculo />, van: <IconeVeiculo />, micro_onibus: <IconeVeiculo />, onibus: <IconeVeiculo />, ambulancia: <IconeVeiculo />, outro: <IconeVeiculo /> } as const;
 
 export default async function Frota() {
   const { usuario, ator } = await exigirComSenhaDefinitiva("gestor");
@@ -23,7 +30,7 @@ export default async function Frota() {
                   <div className="vehicle-card-top">
                     <div className="vehicle-symbol">{ICONE[v.tipo]}</div>
                     {!v.ativo && <span className="status cancel">Inativo</span>}
-                    {v.ativo && v.acessivel && <span className="status">♿ Acessível</span>}
+                    {v.ativo && v.acessivel && <span className="status">Acessível</span>}
                   </div>
                   <h3>{v.nome}</h3>
                   <p>{NOME_TIPO_VEICULO[v.tipo]}{v.placa ? ` · ${formatarPlaca(v.placa)}` : ""}</p>

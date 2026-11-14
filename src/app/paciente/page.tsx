@@ -58,7 +58,7 @@ export default async function InicioPaciente({ searchParams }: { searchParams: P
                   <b>{diaSemana(d.viagem.data)}, {dataBr(d.viagem.data)} · saída {horaBr(d.viagem.saida)}</b>
                   <div>{d.viagem.cidadeOrigem} → {d.viagem.cidadeDestino}</div>
                   <div className="veh-sub">
-                    {d.veiculo.nome}{d.veiculo.acessivel ? " · ♿ acessível" : ""} · {d.livres} vaga(s){d.volta?.id ? ` · volta ${d.volta.data !== d.viagem.data ? dataBr(d.volta.data) + " " : ""}às ${horaBr(d.volta.saida)} (${d.livresVolta} vaga(s))` : " · sem volta programada"}
+                    {d.veiculo.nome}{d.veiculo.acessivel ? " · acessível" : ""} · {d.livres} vaga(s){d.volta?.id ? ` · volta ${d.volta.data !== d.viagem.data ? dataBr(d.volta.data) + " " : ""}às ${horaBr(d.volta.saida)} (${d.livresVolta} vaga(s))` : " · sem volta programada"}
                   </div>
                 </div>
                 {d.jaReservada ? <span className="status">Reservado</span>
