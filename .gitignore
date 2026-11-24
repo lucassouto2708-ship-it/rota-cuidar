@@ -5,3 +5,9 @@ node_modules/
 *.tsbuildinfo
 next-env.d.ts
 coverage/
+film/stills/
+film/draft.mp4*
+film/look*/
+film/brand/
+film/f.css
+film/site.html
