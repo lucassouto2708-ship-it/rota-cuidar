@@ -25,13 +25,13 @@ em{font-style:italic;color:var(--blue)}
 /* browser fragment (the site's own object: hard border, hard offset shadow) */
 .sh{position:absolute;background:var(--ink)}
 .browser{color:var(--ink);position:absolute;border:3px solid var(--ink);background:var(--paper);overflow:hidden}
-.bar{position:absolute;left:0;top:0;right:0;height:72px;border-bottom:3px solid var(--ink);display:flex;align-items:center;gap:20px;padding:0 26px;font-family:"JetBrains Mono",monospace;font-size:26px}
+.bar{position:absolute;left:0;top:0;right:0;height:72px;display:flex;align-items:center;gap:20px;padding:0 26px;font-family:"JetBrains Mono",monospace;font-size:26px}
 .bar .dots{color:var(--muted);letter-spacing:4px}
 .bar .url{flex:1;background:#f4f5f8;padding:8px 20px;color:#444;white-space:nowrap}
-.scr{position:absolute;left:0;top:72px;right:0;bottom:0;background:#fff}
+.scr{position:absolute;left:0;top:0;right:0;bottom:0;background:#fff}
 .chips span{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:26px;border:2px solid var(--line);padding:8px 20px;margin-right:14px;background:#fff}
 .hov{position:absolute;inset:0;background:rgba(5,5,6,.38)}
-.hov span{position:absolute;left:0;right:0;top:300px;margin:auto;width:420px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:34px;background:var(--blue);color:#fff;padding:20px 0}
+.hov span{position:absolute;left:0;right:0;top:360px;margin:auto;width:420px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:34px;background:var(--blue);color:#fff;padding:20px 0}
 .btn{position:absolute;font-family:"JetBrains Mono",monospace;font-size:36px;padding:30px 44px;border:3px solid var(--ink);white-space:pre}
 .btn.p{background:var(--ink);color:#fff}
 #cur{position:absolute;left:0;top:0;width:60px;height:60px;z-index:50}
@@ -76,18 +76,14 @@ em{font-style:italic;color:var(--blue)}
 
 <!-- ===== S4 PROCESSO ===== -->
 <section id="s4" class="scene dark">
-  <div id="cam4" class="cam">
+  <div id="cam4" class="cam"><div id="asc4" class="ascii"></div>
     <div id="track" style="position:absolute;left:0;top:0;width:7680px;height:1080px">
-      <div class="abs mono" id="n1" style="left:0;top:250px;width:1920px;text-align:center;font-size:40px;color:var(--blue)">[01] └─&gt;</div>
       <div class="abs serif c" id="w1" style="top:340px;font-size:250px;line-height:280px">Conversa</div>
       <div class="abs c" id="d1" style="top:700px;font-size:38px;color:var(--grey)">Entendo seu negócio, seu público e o que o site precisa entregar.</div>
-      <div class="abs mono" id="n2" style="left:1920px;top:250px;width:1920px;text-align:center;font-size:40px;color:var(--blue)">[02] └─&gt;</div>
       <div class="abs serif" id="w2" style="left:1920px;top:340px;width:1920px;text-align:center;font-size:250px;line-height:280px">Design</div>
       <div class="abs" id="d2" style="left:1920px;top:700px;width:1920px;text-align:center;font-size:38px;color:var(--grey)">Crio um visual exclusivo, alinhado à identidade da sua marca.</div>
-      <div class="abs mono" id="n3" style="left:3840px;top:250px;width:1920px;text-align:center;font-size:40px;color:var(--blue)">[03] └─&gt;</div>
       <div class="abs serif" id="w3" style="left:3840px;top:340px;width:1920px;text-align:center;font-size:200px;line-height:280px">Desenvolvimento</div>
       <div class="abs" id="d3" style="left:3840px;top:700px;width:1920px;text-align:center;font-size:38px;color:var(--grey)">Site rápido, responsivo e otimizado para aparecer no Google.</div>
-      <div class="abs mono" id="n4" style="left:5760px;top:250px;width:1920px;text-align:center;font-size:40px;color:var(--blue)">[04] └─&gt;</div>
       <div class="abs serif" id="w4" style="left:5760px;top:340px;width:1920px;text-align:center;font-size:250px;line-height:280px">No <em>ar</em></div>
       <div class="abs" id="d4" style="left:5760px;top:700px;width:1920px;text-align:center;font-size:38px;color:var(--grey)">Publicação, ajustes finais e suporte para você crescer tranquilo.</div>
     </div>
@@ -122,7 +118,7 @@ function ascii(id, density) {
   for (let r = 0; r < 40; r++) { let s = ''; for (let c = 0; c < 190; c++) s += rnd() < density ? set[Math.floor(rnd() * set.length)] : ' '; rows.push(s); }
   document.getElementById(id).textContent = rows.join('\n');
 }
-['asc1', 'asc3a', 'asc3b', 'asc3c', 'asc5'].forEach(id => ascii(id, .16));
+['asc1', 'asc4', 'asc3a', 'asc3b', 'asc3c', 'asc5'].forEach(id => ascii(id, .16));
 const PH = ['sites sob medida', 'responsivo no celular', 'carregamento rápido', 'design que converte', 'entrega ágil', 'suporte próximo'];
 const mqText = (n, off) => Array.from({ length: n }, (_, i) => PH[(i + off) % 6] + '  ✦  ').join('');
 mq1.textContent = mqText(14, 0); mq2.textContent = mqText(14, 3); mq3.textContent = mqText(14, 2); mq4.textContent = mqText(14, 5);
@@ -139,11 +135,11 @@ PROJ.forEach((p, i) => {
   document.getElementById('pc' + k).innerHTML = `
   <div id="grp${k}" class="cam"><div id="sh${k}" class="sh" style="left:${160}px;top:${140}px;width:1600px;height:840px;background:${p.dark ? '#fff' : '#050506'}"></div>
   <div id="br${k}" class="browser" style="left:140px;top:120px;width:1600px;height:840px;${p.dark ? 'border-color:#fff' : ''}">
-    <div class="bar" style="${p.dark ? 'border-color:#fff' : ''}"><span class="dots">●○○</span><span class="url">${p.url}</span><span>↗</span></div>
     <div class="scr">
-      <div id="nm${k}" class="abs serif" style="left:0;top:40px;width:1600px;text-align:center;font-size:170px;line-height:190px;">${p.name}</div>
-      <div id="ds${k}" class="abs" style="left:300px;top:290px;width:1000px;text-align:center;white-space:normal;font-size:38px;line-height:54px;color:#33333a">${p.desc}</div>
-      <div id="ch${k}" class="chips abs" style="left:0;top:520px;width:1600px;text-align:center"><span id="c${k}a">${p.chips[0]}</span><span id="c${k}b">${p.chips[1]}</span><span id="c${k}c">${p.chips[2]}</span></div>
+      <div id="nm${k}" class="abs serif" style="left:0;top:90px;width:1600px;text-align:center;font-size:170px;line-height:190px;">${p.name}</div>
+      <div id="ds${k}" class="abs" style="left:300px;top:340px;width:1000px;text-align:center;white-space:normal;font-size:38px;line-height:54px;color:#33333a">${p.desc}</div>
+      <div id="ch${k}" class="chips abs" style="left:0;top:560px;width:1600px;text-align:center"><span id="c${k}a">${p.chips[0]}</span><span id="c${k}b">${p.chips[1]}</span><span id="c${k}c">${p.chips[2]}</span></div>
+      <div id="lk${k}" class="abs mono" style="left:0;top:660px;width:1600px;text-align:center;font-size:34px"><span style="border-bottom:3px solid ${'#648CFF'};padding-bottom:4px">&gt; visitar ${p.url} ↗</span></div>
       <div id="hv${k}" class="hov"><span>[ abrir site ↗ ]</span></div>
     </div>
   </div></div>`;
@@ -177,6 +173,7 @@ PROJ.forEach((p, i) => {
   M.enter('#grp' + k, { at: t0, frames: 12, ease: 'snapSettle', from: { x: p.from * 520, scale: 1.18, blur: 10 }, smear: { axis: 'x', px: 36, frames: 3 } });
   M.words('#nm' + k, { at: t0 + 6, mech: 'rise', dist: 80, gaps: [5, 4], frames: 13, smear: true });
   M.enter('#ds' + k, { at: t0 + 22, frames: 12, ease: 'softLand', from: { y: 30, opacity: 0 } });
+  M.enter('#lk' + k, { at: t0 + 52, frames: 9, ease: 'softLand', from: { y: 18, opacity: 0 } });
   M.cascade(['#c' + k + 'a', '#c' + k + 'b', '#c' + k + 'c'], { at: t0 + 34, gaps: [4, 4], fn: (el, f) => M.enter(el, { at: f, frames: 9, ease: 'softLand', from: { y: 22, opacity: 0 } }) });
   /* hover = the site's real hover: overlay + blue button, shadow goes blue and the frame nudges */
   const hovAt = t0 + 82;
@@ -212,10 +209,10 @@ M.cut(720, { hide: ['#p3'], show: ['#s4'] });
 
 /* ================= S4 PROCESSO (720-950) ================= */
 const P = [720, 777, 834, 891];
-M.drift('#cam4', { prop: 'scale', from: 1, to: 1.05, start: 720, end: 950 });
+M.drift('#asc4', { prop: 'x', from: 0, to: -300, start: 720, end: 950 });
+M.drift('#cam4', { prop: 'scale', from: 1, to: 1.09, start: 720, end: 950 });
 ['1', '2', '3', '4'].forEach((n, i) => {
   const at = P[i];
-  M.enter('#n' + n, { at, frames: 8, ease: 'softLand', from: { y: 20, opacity: 0 } });
   M.words('#w' + n, { at: at + 4, mech: 'rise', dist: 110, frames: 13, smear: true });
   M.enter('#d' + n, { at: at + 18, frames: 12, ease: 'softLand', from: { y: 24, opacity: 0 } });
 });
