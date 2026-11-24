@@ -20,7 +20,7 @@ html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#000}
 .c{left:0;width:1920px;text-align:center}
 em{font-style:italic;color:var(--blue)}
 .ascii{position:absolute;left:0;top:0;width:2400px;height:1080px;font-family:"JetBrains Mono",monospace;font-size:22px;line-height:27px;white-space:pre;color:#d5d9e6;overflow:hidden}
-.dark .ascii{color:#1d1d22}
+.dark .ascii{color:#3a3b46}
 .dark{background:var(--ink);color:#fff}
 /* browser fragment (the site's own object: hard border, hard offset shadow) */
 .sh{position:absolute;background:var(--ink)}
@@ -118,7 +118,7 @@ function ascii(id, density) {
   for (let r = 0; r < 40; r++) { let s = ''; for (let c = 0; c < 190; c++) s += rnd() < density ? set[Math.floor(rnd() * set.length)] : ' '; rows.push(s); }
   document.getElementById(id).textContent = rows.join('\n');
 }
-['asc1', 'asc4', 'asc3a', 'asc3b', 'asc3c', 'asc5'].forEach(id => ascii(id, .16));
+['asc1', 'asc4', 'asc3a', 'asc3b', 'asc3c', 'asc5'].forEach(id => ascii(id, .2));
 const PH = ['sites sob medida', 'responsivo no celular', 'carregamento rápido', 'design que converte', 'entrega ágil', 'suporte próximo'];
 const mqText = (n, off) => Array.from({ length: n }, (_, i) => PH[(i + off) % 6] + '  ✦  ').join('');
 mq1.textContent = mqText(14, 0); mq2.textContent = mqText(14, 3); mq3.textContent = mqText(14, 2); mq4.textContent = mqText(14, 5);
@@ -213,7 +213,7 @@ M.drift('#asc4', { prop: 'x', from: 0, to: -300, start: 720, end: 950 });
 M.drift('#cam4', { prop: 'scale', from: 1, to: 1.09, start: 720, end: 950 });
 ['1', '2', '3', '4'].forEach((n, i) => {
   const at = P[i];
-  M.words('#w' + n, { at: at + 4, mech: 'rise', dist: 110, frames: 13, smear: true });
+  M.words('#w' + n, { at: at + (i === 0 ? 0 : 4), mech: 'rise', dist: 110, frames: 13, smear: true });
   M.enter('#d' + n, { at: at + 18, frames: 12, ease: 'softLand', from: { y: 24, opacity: 0 } });
 });
 [770, 827, 884].forEach(f => M.whip('#track', { at: f, dx: -1920, dy: 0, frames: 8, smearPx: 50 }));
