@@ -59,7 +59,7 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}
   <div id="cam9" class="cam">
     <img id="logo" src="assets/logo-claro.png" style="position:absolute;left:220px;top:720px;width:640px;display:block">
     <div id="sub" class="abs c serif" style="top:900px;font-size:50px;color:#BED67E">Assessoria Tributária</div>
-    <div id="bio" class="abs c" style="top:1180px;font-size:58px;font-weight:600">Link na bio</div>
+    <div id="bio" class="abs c serif" style="top:1150px;font-size:150px;line-height:170px;color:#BED67E">Link na bio</div>
   </div>
 </section>
 
@@ -1995,8 +1995,9 @@ M.cut(1090, { hide: ['#s8'], show: ['#s9'] });
 /* ================= S9 FIM 1090-1200 ================= */
 M.enter('#logo', { at: 1090, frames: 20, ease: 'snapSettle', from: { scale: 3.5, blur: 14 } });
 M.enter('#sub', { at: 1112, frames: 12, ease: 'softLand', from: { y: 24, opacity: 0 } });
-M.enter('#bio', { at: 1160, frames: 12, ease: 'softLand', from: { y: 30, opacity: 0 } });
-M.drift('#cam9', { prop: 'scale', from: 1, to: .88, start: 1090, end: 1200 });
+M.words('#bio', { at: 1158, mech: 'rise', dist: 200, gaps: [6, 6], frames: 14, smear: true });
+M.drift('#cam9', { prop: 'scale', from: 1, to: .74, start: 1090, end: 1200 });
+M.kf('#cam9', 'y', [[1140, 0], [1164, -170, 'softLand']]);
 M.drift('#leaf9', { prop: 'x', from: 0, to: -140, start: 1090, end: 1200 });
 
 window.__ready = Motion.loaded().then(() => { if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
