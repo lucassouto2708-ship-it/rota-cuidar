@@ -1,0 +1,2004 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>AM Santos - Calculadora NFS-e</title>
+<meta name="viewport" content="width=1080, height=1920">
+<link rel="stylesheet" href="./runtime/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ACCENT (limao #BED67E) = "o que a calculadora entrega / o resultado": numero final, destaques, clique. */
+:root{--floresta:#142016;--musgo:#2F3D2E;--papel:#F4F2EA;--areia:#E8E6D8;--limao:#BED67E;--salvia:#8BB882}
+*{box-sizing:border-box}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}
+#main{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--floresta);color:var(--papel);font-family:"Public Sans",system-ui,sans-serif}
+.scene{position:absolute;inset:0}
+.cam{position:absolute;inset:0}
+.abs{position:absolute;white-space:pre}
+.c{left:0;width:1080px;text-align:center}
+.serif{font-family:"Marcellus",Georgia,serif;font-weight:400}
+.leaf{position:absolute;width:1500px;left:-120px;top:980px;mix-blend-mode:lighten;opacity:.13}
+#ui{position:absolute;left:0;top:0;width:1080px;height:3700px;transform-origin:0 0}
+#ui img.pl{position:absolute;left:0;top:0;width:1080px;height:auto;display:block}
+.hl{position:absolute;border:5px solid var(--limao);background:rgba(190,214,126,.16);border-radius:3px}
+#cur{position:absolute;left:0;top:0;width:60px;height:60px;z-index:30}
+</style>
+</head>
+<body>
+<div id="main">
+
+<!-- ===== S1 HOOK ===== -->
+<section id="s1" class="scene">
+  <img class="leaf" src="assets/simbolo.png">
+  <div id="cam1" class="cam">
+    <div id="t1" class="abs c" style="top:470px;font-size:72px;line-height:90px;font-weight:500">Numa nota de R$ 1.000,</div>
+    <div id="t2" class="abs c" style="top:570px;font-size:72px;line-height:90px;font-weight:500">o imposto novo pode saltar de</div>
+    <div id="bigw" class="abs c serif" style="top:760px;font-size:196px;line-height:240px"><span id="bigv">R$ 9,00</span></div>
+  </div>
+</section>
+
+<!-- ===== UI (calculadora real) ===== -->
+<section id="sui" class="scene" style="background:#F4F2EA">
+  <div id="ui"></div>
+  <div id="co" class="abs" style="left:60px;top:330px;width:960px;height:170px;background:#142016;border:4px solid #BED67E"><div id="coL" class="abs" style="left:40px;top:32px;font-size:44px;font-weight:500;color:#F4F2EA"></div><div id="coV" class="abs serif" style="left:40px;top:84px;font-size:130px;line-height:150px;color:#BED67E"></div></div>
+</section>
+
+<!-- ===== PDF ===== -->
+<section id="s8" class="scene">
+  <img class="leaf" src="assets/simbolo.png">
+  <div id="pdfg" class="cam">
+    <div style="position:absolute;left:160px;top:420px;width:760px;height:1075px;background:#BED67E;transform:translate(22px,22px)" id="pdfsh"></div>
+    <img id="pdfimg" src="assets/cap/print.png" style="position:absolute;left:160px;top:420px;width:760px;height:1075px;display:block;border:3px solid #142016">
+  </div>
+</section>
+
+<!-- ===== END ===== -->
+<section id="s9" class="scene">
+  <img class="leaf" src="assets/simbolo.png" style="top:900px;opacity:.1">
+  <div id="cam9" class="cam">
+    <img id="logo" src="assets/logo-claro.png" style="position:absolute;left:220px;top:720px;width:640px;display:block">
+    <div id="sub" class="abs c serif" style="top:900px;font-size:50px;color:#BED67E">Assessoria Tributária</div>
+    <div id="bio" class="abs c" style="top:1180px;font-size:58px;font-weight:600">Link na bio</div>
+  </div>
+</section>
+
+</div>
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+const M = Motion.film({ fps: 30, duration: 40, width: 1080, height: 1920, clock: 'smooth' });
+const LIME = '#BED67E', PAPEL = '#F4F2EA';
+const R = {
+ "s00": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s01": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s02": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s03": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s04": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s05": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s06": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s07": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1537.765625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1625.359375,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1682.75,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1726.75,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1770.75,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1814.75,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1916.140625,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1970.140625,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2178.921875,
+   222.96875,
+   44
+  ],
+  "_h": 2371
+ },
+ "s08": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": null,
+  "cnpjNome": null,
+  "tags": null,
+  "cnae": null,
+  "aliq": null,
+  "rIss": [
+   69,
+   1568.15625,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1655.75,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1713.140625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1757.140625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1801.140625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1845.140625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1946.53125,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   2000.53125,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2209.3125,
+   222.96875,
+   44
+  ],
+  "_h": 2401
+ },
+ "s09": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s10": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s11": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s12": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s13": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s14": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   1141.90625,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   1141.90625,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   1194.90625,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   1209.90625,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   1214.90625,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1276.5625,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1329.5625,
+   596,
+   34.53125
+  ],
+  "rIss": [
+   69,
+   1584.171875,
+   582,
+   43.796875
+  ],
+  "rBase": [
+   69,
+   1671.765625,
+   582,
+   57.390625
+  ],
+  "rCbs": [
+   69,
+   1729.15625,
+   582,
+   44
+  ],
+  "rIbsUf": [
+   69,
+   1773.15625,
+   582,
+   44
+  ],
+  "rIbsMun": [
+   69,
+   1817.15625,
+   582,
+   44
+  ],
+  "rTot": [
+   69,
+   1861.15625,
+   582,
+   57.390625
+  ],
+  "rIr": [
+   69,
+   1918.546875,
+   582,
+   44
+  ],
+  "rLiq": [
+   45,
+   1972.546875,
+   630,
+   79.609375
+  ],
+  "cmpBox": null,
+  "cmpDest": null,
+  "cmpHead": null,
+  "cmpBody": null,
+  "cmpDelta": null,
+  "pdf": [
+   452.03125,
+   2181.328125,
+   222.96875,
+   44
+  ],
+  "_h": 2373
+ },
+ "s15": {
+  "h1": [
+   16,
+   131,
+   688,
+   40.3125
+  ],
+  "abas": [
+   45,
+   416.890625,
+   630,
+   56
+  ],
+  "tabCmp": [
+   464.65625,
+   417.890625,
+   209.328125,
+   54
+  ],
+  "valor": [
+   45,
+   515.28125,
+   307,
+   39
+  ],
+  "cnpj": [
+   62,
+   880.328125,
+   479.96875,
+   39
+  ],
+  "btnCnpj": [
+   549.96875,
+   880.328125,
+   108.03125,
+   39
+  ],
+  "cnpjRes": [
+   62,
+   933.328125,
+   596,
+   199.6875
+  ],
+  "cnpjNome": [
+   62,
+   948.328125,
+   321.296875,
+   27.609375
+  ],
+  "tags": [
+   416.5,
+   953.328125,
+   52.90625,
+   23.265625
+  ],
+  "cnae": [
+   62,
+   1014.984375,
+   596,
+   41
+  ],
+  "aliq": [
+   62,
+   1067.984375,
+   596,
+   34.53125
+  ],
+  "rIss": null,
+  "rBase": null,
+  "rCbs": null,
+  "rIbsUf": null,
+  "rIbsMun": null,
+  "rTot": null,
+  "rIr": null,
+  "rLiq": null,
+  "cmpBox": [
+   45,
+   1261.40625,
+   630,
+   757.765625
+  ],
+  "cmpDest": [
+   69,
+   1328.59375,
+   582,
+   76
+  ],
+  "cmpHead": [
+   69,
+   1420.59375,
+   582,
+   54.265625
+  ],
+  "cmpBody": [
+   69,
+   1474.859375,
+   582,
+   544.3125
+  ],
+  "cmpDelta": [
+   527.796875,
+   1347.390625,
+   105.203125,
+   38.390625
+  ],
+  "pdf": [
+   452.03125,
+   2227.125,
+   222.96875,
+   44
+  ],
+  "_h": 2419
+ }
+};
+const S = 1.5;                       /* css px -> film px at camera scale 1 */
+const ctr = (st, k, ox = 0.5, oy = 0.5) => { const r = R[st][k]; return [r[0] + r[2] * ox, r[1] + r[3] * oy]; };
+const H = st => R[st]._h;
+/* camera key: centre (css coords of the plate) + scale, clamped so the plate always fills the frame */
+function K(f, st, cx, cy, s, ease) {
+  cx = Math.min(Math.max(cx, 360 / s), 720 - 360 / s);
+  cy = Math.min(Math.max(cy, 640 / s), H(st) - 640 / s);
+  return [f, { scale: s, x: 540 - s * S * cx, y: 960 - s * S * cy }, ease];
+}
+
+/* ---------- plates ---------- */
+const PL = ['s00','s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15'];
+const ui = document.getElementById('ui');
+ui.innerHTML = PL.map(n => `<img class="pl" id="p_${n}" src="assets/cap/${n}.png">`).join('') +
+  '<div id="hl" class="hl"></div><div id="hl2" class="hl"></div><div id="cur"><svg id="curi" viewBox="0 0 60 60" width="60" height="60"><path d="M3 3 L3 44 L14 34 L22 53 L30 49 L22 31 L38 31 Z" fill="#142016" stroke="#F4F2EA" stroke-width="3.5" stroke-linejoin="round"/></svg></div>';
+const hlBox = (id, st, keys, pad = 8) => {
+  const rs = keys.map(k => R[st][k]);
+  const x0 = Math.min(...rs.map(r => r[0])), y0 = Math.min(...rs.map(r => r[1]));
+  const x1 = Math.max(...rs.map(r => r[0] + r[2])), y1 = Math.max(...rs.map(r => r[1] + r[3]));
+  return { x: (x0 - pad) * S, y: (y0 - pad) * S, w: (x1 - x0 + 2 * pad) * S, h: (y1 - y0 + 2 * pad) * S };
+};
+const place = (el, b) => { el.style.left = b.x + 'px'; el.style.top = b.y + 'px'; el.style.width = b.w + 'px'; el.style.height = b.h + 'px'; };
+
+/* which plate when (frames) */
+const SHOW = [['s15',185,328],['s00',328,345],['s01',345,350],['s02',350,358],['s03',358,366],['s04',366,374],['s05',374,380],['s06',380,386],['s07',386,414],
+  ['s08',414,432],['s09',432,580],['s10',580,592],['s11',592,600],['s12',600,608],['s13',608,616],['s14',616,806],['s15',806,1016]];
+SHOW.forEach(([n, a, b]) => M.show('#p_' + n, a, b));
+
+/* ================= S1 HOOK 0-185 ================= */
+M.words('#t1', { at: 4, mech: 'rise', dist: 70, gaps: [5, 4, 4, 6], frames: 13, smear: true });
+M.words('#t2', { at: 38, mech: 'rise', dist: 70, gaps: [4, 4, 4, 4, 5], frames: 13, smear: true });
+M.exit('#t1', { at: 84, frames: 8, ease: 'accelExit', to: { y: -60, blur: 6 }, smear: true, hide: true });
+M.exit('#t2', { at: 86, frames: 8, ease: 'accelExit', to: { y: -60, blur: 6 }, smear: true, hide: true });
+M.enter('#bigw', { at: 96, frames: 14, ease: 'snapSettle', from: { scale: 1.7, blur: 12 }, smear: { axis: 'y', px: 40, frames: 3 } });
+M.count('#bigv', { at: 118, from: 9, to: 107, frames: 20, round: true, format: v => 'R$ ' + v + ',00', skip: .1, seed: 3 });
+M.kf('#bigv', 'color', [[0, 0], [137, 0], [137, 1], [190, 1]], { fmt: v => (v ? LIME : PAPEL) });
+M.kf('#cam1', 'scale', [[0, 1], [150, 1.03], [185, 1.22, 'gentleIn']]);
+M.cut(185, { hide: ['#s1'], show: ['#sui'] });
+
+/* ================= B2 185-328: a origem do numero ================= */
+const cam = [];
+cam.push(K(185, 's15', 200, ctr('s15', 'cmpDest')[1], 1.9));
+cam.push(K(246, 's15', 520, ctr('s15', 'cmpDest')[1], 1.9, 'softInOut'));
+cam.push(K(278, 's15', 360, 560, 1.0, 'whip'));           /* "dá para ver isso antes" */
+cam.push(K(328, 's00', 360, 600, 1.02));
+/* ---- B3 CNPJ 328-395 ---- */
+cam.push(K(334, 's00', 235, ctr('s00', 'cnpj')[1], 1.9, 'whip'));
+cam.push(K(395, 's07', 250, ctr('s07', 'cnpj')[1], 2.0, 'softInOut'));
+/* ---- B4 consultar 395-562 ---- */
+cam.push(K(404, 's07', 470, ctr('s07', 'cnpj')[1], 1.75, 'whip'));
+cam.push(K(436, 's09', 292, 1262, 1.5, 'whip'));           /* empresa */
+cam.push(K(482, 's09', 300, 1262, 1.56, 'softInOut'));
+cam.push(K(488, 's09', 270, ctr('s09', 'cnae')[1] + 6, 1.7, 'whip'));    /* atividade */
+cam.push(K(526, 's09', 280, ctr('s09', 'cnae')[1] + 6, 1.75, 'softInOut'));
+cam.push(K(532, 's09', 190, ctr('s09', 'aliq')[1] - 6, 2.3, 'whip'));     /* aliquota de IR */
+cam.push(K(558, 's09', 196, ctr('s09', 'aliq')[1] - 6, 2.4, 'softInOut'));
+/* ---- B5 valor 562-630 ---- */
+cam.push(K(570, 's10', 210, ctr('s10', 'valor')[1], 2.0, 'whip'));
+cam.push(K(622, 's14', 210, ctr('s14', 'valor')[1], 2.1, 'softInOut'));
+/* ---- B6 resultado 630-796 ---- */
+cam.push(K(640, 's14', 360, 1800, 1.2, 'whip'));
+cam.push(K(796, 's14', 360, 1800, 1.27, 'softInOut'));
+/* ---- B7 comparar 796-998 ---- */
+cam.push(K(800, 's15', 540, 445, 1.8, 'whip'));
+cam.push(K(846, 's15', 540, 445, 1.85, 'softInOut'));
+cam.push(K(852, 's15', 360, ctr('s15', 'cmpHead')[1] + 190, 1.22, 'whip'));      /* 2026 x 2027 lado a lado */
+cam.push(K(925, 's15', 360, ctr('s15', 'cmpHead')[1] + 200, 1.27, 'softInOut'));
+cam.push(K(934, 's15', 500, ctr('s15', 'cmpDest')[1], 1.85, 'whip'));            /* quanto muda no bolso */
+cam.push(K(970, 's15', 500, ctr('s15', 'cmpDest')[1], 1.9, 'softInOut'));
+cam.push(K(974, 's15', 360, R.s15.cmpBody[1] + R.s15.cmpBody[3] - 220, 1.25, 'whip'));
+cam.push(K(996, 's15', 360, R.s15.cmpBody[1] + R.s15.cmpBody[3] - 215, 1.28, 'softInOut'));
+/* ---- B8 pdf ---- */
+cam.push(K(1000, 's15', 560, ctr('s15', 'pdf')[1] - 30, 2.0, 'whip'));
+cam.push(K(1016, 's15', 560, ctr('s15', 'pdf')[1] - 30, 2.2, 'gentleIn'));
+M.camera('#ui', cam, { origin: '0% 0%' });
+
+/* ---------- cursor ---------- */
+const P = (x, y) => [x * S, y * S];
+const cf = (f, x, y, sc = 1) => { const [a, b] = P(x, y); return [f, a, b, sc, 0]; };
+const fieldX = 130, cy0 = ctr('s00', 'cnpj')[1], bt = ctr('s07', 'btnCnpj'), vl = ctr('s10', 'valor'), tab = ctr('s14', 'tabCmp'), pdf = ctr('s15', 'pdf');
+M.show('#cur', 332, 1016);
+M.cursor('#cur', { keys: [
+  cf(332, 760, cy0 + 260), cf(343, fieldX, cy0), cf(398, fieldX + 6, cy0 + 2),
+  cf(408, bt[0] - 10, bt[1] - 2), cf(424, bt[0] - 6, bt[1]), cf(444, 560, bt[1] + 120), cf(560, 566, bt[1] + 118),
+  cf(573, vl[0] - 60, vl[1]), cf(586, vl[0] - 56, vl[1] + 2), cf(628, 420, vl[1] + 170), cf(790, 424, vl[1] + 168),
+  cf(802, tab[0] - 10, tab[1] - 2), cf(846, tab[0] - 6, tab[1]), cf(900, 520, 700), cf(998, 524, 700),
+  cf(1010, pdf[0] - 10, pdf[1] - 4), cf(1016, pdf[0] - 8, pdf[1] - 2)], ease: 'glide', twos: false });
+[344, 408, 575, 804, 1013].forEach(f => M.kf('#curi', 'scale', [[f - 1, 1], [f + 2, .78, 'softLand'], [f + 7, 1, 'softLand']], { origin: '3px 3px' }));
+
+/* ---------- destaques B6 (linhas do resultado) ---------- */
+const hl = document.getElementById('hl'), hl2 = document.getElementById('hl2');
+const HLS = [[632, 660, ['rIss']], [660, 677, ['rCbs']], [677, 707, ['rIbsUf', 'rIbsMun']], [707, 738, ['rIr']], [738, 796, ['rLiq']]];
+HLS.forEach(([a, b, keys]) => {
+  const id = 'hlx' + a; const d = document.createElement('div'); d.className = 'hl'; d.id = id; ui.appendChild(d);
+  place(d, hlBox(id, 's14', keys, keys[0] === 'rLiq' ? 4 : 5)); M.show('#' + id, a, b);
+});
+hl.remove();
+/* comparar: destaca delta total e valor liquido */
+const cmpLiq = { x: 69 * S, y: (R.s15.cmpBody[1] + R.s15.cmpBody[3] - 58) * S, w: 582 * S, h: 58 * S };
+place(hl2, hlBox('hl2', 's15', ['cmpDest'], 5)); M.show('#hl2', 936, 972);
+const d2 = document.createElement('div'); d2.className = 'hl'; d2.id = 'hlliq'; ui.appendChild(d2); place(d2, cmpLiq); M.show('#hlliq', 974, 1016);
+
+const CO = [[632,660,'ISSQN destacado','R$ 50,00'],[660,677,'CBS','R$ 106,40'],[677,707,'IBS','R$ 0,48 + R$ 0,48'],[707,738,'IR (CNAE)','R$ 48,00'],[738,796,'Valor líquido','R$ 794,65'],[852,925,'2026 × 2027','R$ 9,14 → R$ 107,35'],[974,1016,'Líquido','R$ 856,36 → R$ 794,65']];
+CO.forEach(([a,b,l,v],i)=>{ const g=document.getElementById('co'); const c=g.cloneNode(false); c.id='co'+i; c.style.background='#142016'; c.style.height='170px'; c.innerHTML='<div class="abs" style="left:36px;top:0;line-height:162px;font-size:40px;font-weight:500;color:#F4F2EA">'+l+'</div><div class="abs serif" style="right:36px;top:0;line-height:162px;text-align:right;font-size:'+(v.length>12?58:84)+'px;color:#BED67E">'+v+'</div>'; g.parentNode.insertBefore(c,g); M.show('#co'+i,a,b); });
+document.getElementById('co').remove();
+M.cut(1016, { hide: ['#sui'], show: ['#s8'] });
+
+/* ================= B8 PDF 1016-1090 ================= */
+M.enter('#pdfg', { at: 1016, frames: 14, ease: 'snapSettle', from: { y: 1500, rotation: 3, blur: 8 }, smear: { axis: 'y', px: 40, frames: 3 } });
+M.kf('#pdfg', 'rotation', [[1016, 3], [1030, -2.2, 'softLand'], [1060, -1.6]], { origin: '50% 50%' });
+M.exit('#pdfg', { at: 1064, frames: 22, ease: 'accelExit', to: { x: 1500, rotation: 8, blur: 8 }, smear: true, hide: true });
+M.cut(1090, { hide: ['#s8'], show: ['#s9'] });
+
+/* ================= S9 FIM 1090-1200 ================= */
+M.enter('#logo', { at: 1090, frames: 20, ease: 'snapSettle', from: { scale: 3.5, blur: 14 } });
+M.enter('#sub', { at: 1112, frames: 12, ease: 'softLand', from: { y: 24, opacity: 0 } });
+M.enter('#bio', { at: 1160, frames: 12, ease: 'softLand', from: { y: 30, opacity: 0 } });
+M.kf('#cam9', 'scale', [[1090, 1], [1200, .94, 'glide']]);
+
+window.__ready = Motion.loaded().then(() => { if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
+</script>
+</body>
+</html>
