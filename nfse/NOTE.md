@@ -22,12 +22,19 @@ O vídeo não explica a calculadora: ele a opera. Cada frase da locução vira u
 - **Real:** layout, textos, tabelas, valores e cálculos da calculadora; todos os números de tela saem do código dela. Página de PDF = visão de impressão da própria calculadora.
 - **Ilustrativo (declarar):** a consulta de CNPJ. As APIs públicas estavam bloqueadas no ambiente; usei uma resposta simulada para o CNPJ de teste 11.222.333/0001-81, "PRESTADOR EXEMPLO SERVIÇOS LTDA", CNAE 6920-6/01 (a alíquota de 4,80% vem da tabela real `cnae-data.js`). Troque por um CNPJ real se quiser mostrar um prestador verdadeiro.
 - Cursor, destaques e leituras em texto grande são camada de montagem.
-- Sem música nem efeitos sonoros (sem chave ElevenLabs aqui). Áudio = só a locução (-20,1 LUFS no rascunho; abaixo do alvo de -14).
+- Sem música nem efeitos sonoros (sem chave ElevenLabs aqui). Áudio = só a locução (normalizada para ~-14 LUFS).
 
 ## Gates
-Preencher com os números de `look.py` e `lint.mjs` do render final (ver abaixo).
+- G0 PASS: 40,00 s, áudio presente.
+- G2 PASS: nenhuma sequência > 3 quadros vazios.
+- G3 PASS: parada final 0,80 s; plano final 6,13 s = 15 % do filme.
+- G5 PASS (`lint.mjs`).
+- G1/G4 por inspeção no `look-final/sheet.jpg`: molduras da calculadora cortadas pela borda do quadro; texto pequeno da UI é lido por zoom de câmera e pelas leituras em texto grande; um herói por quadro.
+- Movimento: variação média de luma 3,7/255, abaixo da faixa humana (6,8): filme calmo, com trechos de rolagem parados.
+- Sincronia de cortes com a locução: 7 de 10 cortes dentro de ±80 ms de um início de som.
+- Áudio: locução normalizada para ~-14 LUFS na mixagem final.
 
 ## O que eu ainda melhoraria
-- Música discreta e cliques sonoros; subir a locução para ~-14 LUFS.
+- Música discreta e cliques sonoros.
 - CNPJ real no lugar do simulado.
 - Os trechos de rolagem pelo formulário (digitação do CNPJ e valor) são os mais "parados"; dá para cortar mais rápido.
