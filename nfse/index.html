@@ -55,7 +55,7 @@ html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}
 
 <!-- ===== END ===== -->
 <section id="s9" class="scene">
-  <img class="leaf" src="assets/simbolo.png" style="top:900px;opacity:.1">
+  <img id="leaf9" class="leaf" src="assets/simbolo.png" style="top:900px;opacity:.1">
   <div id="cam9" class="cam">
     <img id="logo" src="assets/logo-claro.png" style="position:absolute;left:220px;top:720px;width:640px;display:block">
     <div id="sub" class="abs c serif" style="top:900px;font-size:50px;color:#BED67E">Assessoria Tributária</div>
@@ -1996,7 +1996,8 @@ M.cut(1090, { hide: ['#s8'], show: ['#s9'] });
 M.enter('#logo', { at: 1090, frames: 20, ease: 'snapSettle', from: { scale: 3.5, blur: 14 } });
 M.enter('#sub', { at: 1112, frames: 12, ease: 'softLand', from: { y: 24, opacity: 0 } });
 M.enter('#bio', { at: 1160, frames: 12, ease: 'softLand', from: { y: 30, opacity: 0 } });
-M.kf('#cam9', 'scale', [[1090, 1], [1200, .94, 'glide']]);
+M.drift('#cam9', { prop: 'scale', from: 1, to: .88, start: 1090, end: 1200 });
+M.drift('#leaf9', { prop: 'x', from: 0, to: -140, start: 1090, end: 1200 });
 
 window.__ready = Motion.loaded().then(() => { if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
 </script>
